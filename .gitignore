@@ -1,0 +1,8 @@
+data/
+models/
+회의/
+.ipynb_checkpoints
+.idea/
+checkpoints/
+models/
+best_model.pth
