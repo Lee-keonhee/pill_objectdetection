@@ -44,3 +44,4 @@ class CustomFasterRCNN(torch.nn.Module):
         # 평가 시에는 images만 받습니다.
         return self.model(images, targets)
 
+# class Custom

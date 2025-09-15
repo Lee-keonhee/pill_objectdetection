@@ -165,3 +165,92 @@ def visualize_prediction(image, prediction, classes, target=None):
             )
         plt.axis("off")
         plt.show()
+
+
+# def create_class_mapping(input_json_path, output_json_path):
+#     """
+#     COCO 데이터셋의 categories 정보를 기반으로 새로운 클래스 매핑 파일을 생성합니다.
+#
+#     Args:
+#         input_json_path (str): 병합된 COCO JSON 파일의 경로.
+#         output_json_path (str): 생성될 매핑 JSON 파일의 경로.
+#     """
+#     try:
+#         with open(input_json_path, 'r', encoding='utf-8') as f:
+#             coco_data = json.load(f)
+#     except FileNotFoundError:
+#         print(f"오류: 파일을 찾을 수 없습니다: {input_json_path}")
+#         return
+#     except json.JSONDecodeError:
+#         print(f"오류: JSON 파일 형식이 올바르지 않습니다: {input_json_path}")
+#         return
+#
+#     # COCO 데이터에서 'categories' 리스트 추출
+#     categories = coco_data.get('categories', [])
+#
+#     # 새로운 매핑 딕셔너리 생성
+#     class_mapping = {}
+#     for i, category in enumerate(categories):
+#         original_id = category.get('id')
+#         name = category.get('name')
+#
+#         # 'label'은 원본 category_id, 키는 0부터 시작하는 새로운 id가 됩니다.
+#         class_mapping[str(i)] = {
+#             "name": name,
+#             "label": original_id
+#         }
+#
+#     # 완성된 매핑을 JSON 파일로 저장
+#     with open(output_json_path, 'w', encoding='utf-8') as f:
+#         json.dump(class_mapping, f, indent=4, ensure_ascii=False)
+#
+#     print(f"새로운 클래스 매핑 파일이 '{output_json_path}'에 성공적으로 생성되었습니다.")
+#     print("생성된 매핑 파일의 내용 (일부):")
+#     print(json.dumps(dict(list(class_mapping.items())[:3]), indent=4, ensure_ascii=False))
+#
+
+
+def create_class_mapping(input_json_path):
+    """
+    COCO 데이터셋의 categories 정보를 기반으로 새로운 클래스 매핑 파일을 생성합니다.
+
+    Args:
+        input_json_path (str): 병합된 COCO JSON 파일의 경로.
+        output_json_path (str): 생성될 매핑 JSON 파일의 경로.
+    """
+    try:
+        with open(input_json_path, 'r', encoding='utf-8') as f:
+            coco_data = json.load(f)
+    except FileNotFoundError:
+        print(f"오류: 파일을 찾을 수 없습니다: {input_json_path}")
+        return
+    except json.JSONDecodeError:
+        print(f"오류: JSON 파일 형식이 올바르지 않습니다: {input_json_path}")
+        return
+
+    # COCO 데이터에서 'categories' 리스트 추출
+    categories = coco_data.get('categories', [])
+
+    # 새로운 매핑 딕셔너리 생성
+    classid2label = {}
+    label2classid = {}
+    label2name = {}
+
+    for i, category in enumerate(categories):
+        original_id = category.get('id')
+        name = category.get('name')
+
+        classid2label[str(original_id)] = i
+        label2classid[str(i)] = original_id
+        label2name[str(i)] = name
+    with open('./id2label.json', 'w', encoding='utf-8') as f:
+        json.dump(classid2label, f, ensure_ascii=False)
+
+    with open('./label2id.json', 'w', encoding='utf-8') as f:
+        json.dump(label2classid, f, indent=4, ensure_ascii=False)
+
+    with open('./label2name.json', 'w', encoding='utf-8') as f:
+        json.dump(label2name, f, ensure_ascii=False)
+
+
+    return classid2label, label2classid, label2name

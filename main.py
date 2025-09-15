@@ -24,7 +24,7 @@ class Args:
         self.model_path = "./checkpoints/final_model.pth"
         self.label2name = './label2name.json'
         self.label2id = './label2id.json'
-
+        self.yaml_path = './my_dataset_config.yaml'
         # Inference parameters
         self.batch_size = 4
         self.num_workers = 4
